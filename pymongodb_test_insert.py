@@ -14,7 +14,6 @@ def get_database():
 # if __name__ == "__main__":
 #
 
-
 dbname = get_database()
 
 collection_books_for_rent = dbname["books_for_rent"]
@@ -23,10 +22,20 @@ collection_items_for_sale = dbname["items_for_sale"]
 
 
 # Add items for the Library Database
-print("Add items for the Library Database:")
-def method_to_add_books_for_rent_to_the_database():
-    books_for_rent = {
-        "books_for_rent":   {
+print("Add books in the Library Database:")
+def method_to_add_items_to_the_database(new_books_for_rent: list = None, new_books_for_sale: list = None,
+                                                 new_items_for_sale: list = None) -> tuple:
+    """
+    :param new_books_for_rent: Add new books for rent to the library database
+    :param new_books_for_sale: Add new books for sale to the library database
+    :param new_items_for_sale: Add new items for sale to the library database
+    :return: An update in the collections that were modified
+    """
+
+    all_items_in_library = {
+        "books":   [{
+                        "books_for_rent": [
+                                            {
             "_id": "U1IT0000001",
             "book_name": "The Road to Serfdom",
             "author": "Friedrich A. Hayek",
@@ -38,7 +47,7 @@ def method_to_add_books_for_rent_to_the_database():
                         ],
             "item_category": "Book for rent"
         },
-                            {
+                                            {
             "_id": "U1IT0000002",
             "book_name": "The Ethics of Liberty",
             "author": "Murray N. Rothbard",
@@ -49,47 +58,10 @@ def method_to_add_books_for_rent_to_the_database():
                         ],
             "item_category": "Book for rent"
         }
-    }
-    new_books_for_rent = [
-                            {
-            "_id": "U1IT0000003",
-            "book_name": "The Ruins of Gorlan",
-            "author": "John Flanagan",
-            "year": "2004",
-            "price": 30.00,
-            "category": [
-                "Fantasy",
-                "Adventure"
-            ],
-            "series": "Ranger's Apprentice",
-            "item_category": "Book for rent"
-        },
-                            {
-            "_id": "U1IT0000004",
-            "book_name" : "The Burning Bridge",
-            "author": "John Flanagan",
-            "year": "2005",
-            "price": 30.00,
-            "category": [
-                            "Fantasy",
-                            "Adventure"
-                        ],
-            "series": "Ranger's Apprentice",
-            "item_category": "Book for rent"
-        },
-                        ]
-    books_for_rent.extend(new_books_for_rent)
-    collection_books_for_rent.insert_many(books_for_rent)
-    return collection_books_for_rent
-
-
-print(method_to_add_books_for_rent_to_the_database(),"\n")
-
-
-# Add books for sale to the Library Database
-print("Add books for sale to the Library Database:")
-def method_to_add_books_for_sale_to_the_database():
-    books_for_sale = [{
+                                          ],
+                        "books_for_sale": [
+                                            {
+        "_id": "BFS0001",
         "book_name": "The Ruins of Gorlan",
         "author": "John Flanagan",
         "year": "2004",
@@ -100,44 +72,14 @@ def method_to_add_books_for_sale_to_the_database():
         ],
         "series": "Ranger's Apprentice",
         "item_category": "Book for sale"
-    }]
-    new_books_for_sale = [
-                            {
-            "book_name" : "The Burning Bridge",
-            "author": "John Flanagan",
-            "year": "2005",
-            "price": 30.00,
-            "category": [
-                            "Fantasy",
-                            "Adventure"
-                        ],
-            "series": "Ranger's Apprentice",
-            "item_category": "Book for sale"
-        },
-                            {
-            "book_name": "The Ethics of Liberty",
-            "author": "Murray N. Rothbard",
-            "year": "1982",
-            "price": 34.99,
-            "category": [
-                            "Political Science"
-                        ],
-            "item_category": "Book for sale"
-        }
-                        ]
-    books_for_sale.extend(new_books_for_sale)
-    collection_books_for_sale.insert_many(books_for_sale)
-    return collection_books_for_sale
-
-
-print(method_to_add_books_for_sale_to_the_database(),"\n")
-
-
-# Add items for sale to the Library Database
-print("Add items for sale to the Library Database:")
-def method_to_add_items_for_sale_to_the_database():
-    items_for_sale = [{
+    }
+                                          ]
+        }],
+        "items": [{
+                        "items_for_sale": [{
+            "_id": "IFS0001",
             "item_name": "Post-it Notes",
+            "price": 5.99,
             "color": "Jaipur Collection",
             "shape": "Square",
             "material_type": "Paper",
@@ -145,51 +87,27 @@ def method_to_add_items_for_sale_to_the_database():
             "sheet_size": "3-x-3-inch",
             "item_category": "Item for Sale"
         }]
-    new_items_for_sale = [
-        {
-            "item_name": "TICONDEROGA Pencils, Wood-Cased, Pre-Sharpened, Graphite",
-            "color": "Yellow",
-            "manufacturer": "Dixon Ticonderoga",
-            "hardness": "HB",
-            "size": "30 Count",
-            "point_type": "Fine",
-            "ink_color": "Black",
-            "item_category": "Item for sale"
-        }
-    ]
-    items_for_sale.extend(new_items_for_sale)
-    collection_items_for_sale.insert_many(items_for_sale)
-    return collection_items_for_sale
+        }]
+    }
 
 
-print(method_to_add_items_for_sale_to_the_database(),"\n")
+    if new_books_for_rent:
+        all_items_in_library["books"][0]["books_for_rent"].extend(new_books_for_rent)
+        collection_books_for_rent.insert_many(all_items_in_library["books"][0]["books_for_rent"])
+
+    if new_books_for_sale:
+        all_items_in_library["books"][0]["books_for_sale"].extend(new_books_for_sale)
+        collection_books_for_sale.insert_many(all_items_in_library["books"][0]["books_for_sale"])
+
+    if new_items_for_sale:
+        all_items_in_library["items"][0]["items_for_sale"].extend(new_items_for_sale)
+        collection_items_for_sale.insert_many(all_items_in_library["items"][0]["items_for_sale"])
+
+    return collection_books_for_rent, collection_books_for_sale, collection_items_for_sale
 
 
-def method_to_find_items_in_some_collection():
+print(method_to_add_items_to_the_database(), "\n")
 
-
-
-# def method_to_find_all_items_in_a_specific_category():
-#
-# def method_to_delete_collections():
-#     collection_items_for_sale.drop()
-#     collection_books_for_rent.drop()
-#     collection_books_for_sale.drop()
-
-
-def method_to_drop_all_collections():
-    print("Dropping the Collection 'books_for_rent'...")
-    collection_books_for_rent.drop()
-    print("Done!\n")
-    print("Dropping the Collection 'books_for_sale'...")
-    collection_books_for_sale.drop()
-    print("Done!\n")
-    print("Dropping the Collection 'items_for_sale'...")
-    collection_items_for_sale.drop()
-    print("Done!")
-    return collection_items_for_sale, collection_books_for_sale, collection_books_for_rent
-
-print(method_to_drop_all_collections())
 
 
 
