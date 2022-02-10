@@ -191,26 +191,5 @@ def method_to_drop_all_collections():
 
 print(method_to_drop_all_collections())
 
-[{
-            "_id": "U1IT0000001",
-            "book_name": "The Road to Serfdom",
-            "author": "Friedrich A. Hayek",
-            "year": "1944",
-            "price": 2.99,
-            "category": [
-                            "Political Science",
-                            "Economics"
-                        ],
-            "item_category": "Book for rent"
-        }, {
-            "_id": "U1IT0000002",
-            "book_name": "The Ethics of Liberty",
-            "author": "Murray N. Rothbard",
-            "year": "1982",
-            "price": 3.49,
-            "category": [
-                            "Political Science"
-                        ],
-            "item_category": "Book for rent"
-        }]
+
 
