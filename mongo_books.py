@@ -1,18 +1,16 @@
 import pymongo
 import mongo_utils
 
-db = mongo_utils.get_client()
 
-def create_one(input: dict):
+def create_one(collection, input: dict):
     """
         :param new_book_for_rent: The new book to be added to the database
         :return: The number of documents in that collection
     """
 
-    books = db.books
-
-    create = books.insert_one(input)
-
+    print("to aqui1")
+    create = collection.insert_one(input)
+    print("to aq")
     return create.acknowledged
 
 def create_many():
@@ -43,6 +41,7 @@ def create_many():
     }
     ]
     return ''
+
 
 
 input_a = {
