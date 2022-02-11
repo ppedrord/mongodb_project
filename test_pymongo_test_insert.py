@@ -160,7 +160,8 @@ new_database_expected = {
         ],
         "series": "Ranger's Apprentice",
         "item_category": "Book for sale"
-    }, {
+    },
+                                            {
             "_id": "BFS0002",
             "book_name": "The Burning Bridge",
             "author": "John Flanagan",
