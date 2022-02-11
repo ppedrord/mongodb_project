@@ -1,4 +1,20 @@
-{
+from pymongo import MongoClient
+
+def get_client():
+    # Use the atlas url to connect pyhton to MongoDB using pymong
+    connection_string = "mongodb://127.0.0.1:27017/?directConnection=true&serverSelectionTimeoutMS=2000&appName=mongosh+1.1.9"
+
+    # Create a connection using MongoClient
+    client = MongoClient(connection_string)
+    return client['library_database']
+
+dbname = get_client()
+
+collection_books_for_rent = dbname["books_for_rent"]
+collection_books_for_sale = dbname["books_for_sale"]
+collection_items_for_sale = dbname["items_for_sale"]
+
+all_items_in_library = {
   "books": [
     {
       "books_for_rent": [
@@ -61,4 +77,3 @@
     }
   ]
 }
-
