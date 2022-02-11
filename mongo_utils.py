@@ -6,7 +6,7 @@ def get_client():
 
     # Create a connection using MongoClient
     client = MongoClient(connection_string)
-    return client['library_database']
+    return client['library']
 
 dbname = get_client()
 
