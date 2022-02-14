@@ -1,28 +1,42 @@
 import pytest
-import mongo_utils, mongo_books
-
-@pytest.fixture
-def get_client_test():
-    db = mongo_utils.get_client()
-    return db
+import mongo_books
+from mongo_utils import get_client
 
 
 @pytest.fixture
-def collection_func(get_client_test):
-    collection = get_client_test().books
-    yield collection
-    print("Dropping the Collection 'books_for_rent'...")
-    collection.drop()
-    print("Done!\n")
+def create_collection():
+    print("Creating collection 'customers...")
+    collection_customers = get_client().customers
+    print("'customers' collection was created!\n")
+    return collection_customers
 
 
-input_a = {
-    "book": "The Ruins of Gorlan",
-    "author": "John Flanagan",
-}
+@pytest.fixture
+def insert_data_and_drop_collection(create_collection):
+    input_data = {
+        "customer_name": "Douglas",
+        "age": "22",
+    }
+    data_inserted = create_collection().insert_one(input_data)
+    yield data_inserted
+    print("Dropping 'customers' collection...")
+    collection_customers.drop()
+    print("'customers' collection was deleted!")
 
 
-def test_create_one():
-    assert mongo_books.create_one(collection_func, input_a) == True
+input_many_documents = [
+        {
+            "customer_name": "Pedro Paulo",
+            "age": "22"
+        },
+        {
+            "customer_name": "João Victor",
+            "age": "22"
+        }
+  ]
+result = [(create_collection(), insert_data_and_drop_collection(), True)]
 
 
+@pytest.mark.parametrize(["collection", "input_data", "expected"], result)
+def test_create_one(collection, input_data):
+    assert mongo_books.create_one(collection, input_data) == True
