@@ -21,6 +21,26 @@ def db_collection_insert_many():
     yield collection
     collection.drop()
 
+
+@pytest.fixture
+def db_collection_insert_many_multiple_collections():
+    client     = get_client()
+    authors = client.authors
+
+    authors.insert_many([
+        {"_id" : 1, "name" : "Pedro"},
+        {"_id" : 2, "name" : "Lauro"},
+    ])
+
+    books = client.books
+    books.insert_many([
+        {"_id": 1, "id_author": 1, "book": "A Bíblia Comentada"},
+        {"_id": 2, "id_author": 2, "book": "Lição Jovem"},
+        {"_id": 3, "id_author": 1, "book": "A Bíblia Comentada 2"}
+    ])
+    yield collection
+    collection.drop()
+
 value = {
         "customer_name": "João Victor",
         "age": "22"
