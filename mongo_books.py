@@ -34,47 +34,46 @@ def find_one(collection: pymongo.collection.Collection, field: str, value: str) 
     return find
 
 
-def find_many(collection: pymongo.collection.Collection, field: str, modifier: str,
-              value: str or dict or int or bool) -> list:
+def find_many_greater_than(collection: pymongo.collection.Collection, field: str,
+                           value: str or dict or int or bool) -> list:
     """
-    :param modifier: The modifier to do the operation
     :param value: The value being searched
     :param field: The field being searched
     :param collection: The collection that will be read
     :return: A list of occurrences with the specified parameters
     """
     list_of_occurrence = []
-    find_many_documents = collection.find({field: {modifier: value}})
+    find_many_documents = collection.find({field: {"$gt": value}})
     for occurrences in find_many_documents:
         list_of_occurrence.append(occurrences)
     return list_of_occurrence
 
 
-def update_one(collection: pymongo.collection.Collection, field: str, value: str or dict, modifier: str,
+def update_one_set(collection: pymongo.collection.Collection, field: str, value: str or dict,
                new_value: str or dict or int or bool) -> int:
     """
     :param field: The field being searched
     :param value: The value being searched
-    :param modifier: The modifier to do the operation
     :param new_value: The new value after the operation
     :param collection: The collection that will be updated
     :return: The number of modified documents
     """
-    update_one_document = collection.update_one({field: value}, {modifier: {field: new_value}})
+    find_one_document = collection.find_one({field: value})
+    print(find_one_document)
+    update_one_document = collection.update_one({field: value}, {"$set": {field: new_value}})
     return update_one_document.modified_count
 
 
-def update_many(collection: pymongo.collection.Collection, field: str, value: str or dict, modifier: str,
+def update_many_set(collection: pymongo.collection.Collection, field: str, value: str or dict,
                 new_value: str or dict or int or bool) -> int:
     """
     :param field: The field being searched
     :param value: The value being searched
-    :param modifier: The modifier to do the operation
     :param new_value: The new value after the operation
     :param collection: The collection that will be updated
     :return: The number of modified documents
     """
-    update_many_documents = collection.update_many({field: value}, {modifier: {field: new_value}})
+    update_many_documents = collection.update_many({field: value}, {"$set": {field: new_value}})
     return update_many_documents.modified_count
 
 
