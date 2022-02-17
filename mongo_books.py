@@ -131,8 +131,10 @@ def update_book_availability_status(collection_books: pymongo.collection.Collect
                                     collection_customers: pymongo.collection.Collection,
                                     book_name: str) -> int:
     """
-
-    :return:
+    :param collection_books: The collection with books for rent in the library
+    :param collection_customers: The customers registered in the Library
+    :param book_name: The name of the book to be searched
+    :return: The number of documents updated
     """
     find_book = collection_books.find_one({"book_name": book_name}, {"_id": 1})
     book_id = find_book.get("_id")
