@@ -515,7 +515,7 @@ value_update_book_status = [
 new_value_update_book_status = None
 
 
-def test_update_books_rentend_for_customers(db_collection_insert_many_multiple_collections):
+def test_update_books_rented_for_customers(db_collection_insert_many_multiple_collections):
     assert mongo_books.update_one_set(db_collection_insert_many_multiple_collections, field_update_book_status,
                                       value_update_book_status, new_value_update_book_status) == 1
 
