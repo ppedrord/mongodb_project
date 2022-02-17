@@ -527,7 +527,7 @@ def test_check_book_availability_status_in_customer(db_collection_books_check_bo
                                                     db_collection_customers_check_book_availability_status_in_customer):
     assert mongo_books.check_book_availability_status_in_customers(
         db_collection_books_check_book_availability_status_in_customer,
-        db_collection_customers_check_book_availability_status_in_customer, book_name_01) == False
+        db_collection_customers_check_book_availability_status_in_customer, book_name_01) is False
 
 
 def test_update_book_availability_status(db_collection_books_check_book_availability_status_in_customer,
