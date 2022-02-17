@@ -129,7 +129,7 @@ def check_book_availability_status_in_customers(collection_books: pymongo.collec
 
 def update_book_availability_status(collection_books: pymongo.collection.Collection,
                                     collection_customers: pymongo.collection.Collection,
-                                    book_name: str):
+                                    book_name: str) -> int:
     """
 
     :return:
@@ -158,7 +158,7 @@ def update_book_availability_status(collection_books: pymongo.collection.Collect
     return result_availability_status.modified_count + remove_book.modified_count
 
 
-def update_prices_with_discount(collection: pymongo.collection.Collection, base_price: int, discount: float):
+def update_prices_with_discount(collection: pymongo.collection.Collection, base_price: float, discount: float) -> int:
     """
     :param collection: The collection that will be updated
     :param base_price: The price from which the discount will be applied
