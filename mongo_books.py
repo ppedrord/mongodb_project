@@ -86,18 +86,17 @@ def delete_one(collection: pymongo.collection.Collection, field: str, value: str
     return delete_document.deleted_count
 
 
-def delete_many(collection: pymongo.collection.Collection, field: str, value: str or dict or int or bool,
-                modifier: str, ) -> int:
+def delete_many_greater_than(collection: pymongo.collection.Collection, field: str,
+                             value: str or dict or int or bool) -> int:
     """
     :param field: The field being searched
     :param value: The value being searched
-    :param modifier: The modifier to do the operation
     :param collection: The collection that will be updated
     :return: The number of modified documents
     """
 
-    delete_many_documents = collection.delete_many({field: {modifier: value}})
-    return delete_many_documents.acknowledged
+    delete_many_documents = collection.delete_many({field: {"$gt": value}})
+    return delete_many_documents.deleted_count
 
 
 def check_book_availability_status_in_customers(collection_books: pymongo.collection.Collection,
@@ -118,11 +117,42 @@ def check_book_availability_status_in_customers(collection_books: pymongo.collec
         documents_in_collection_customers.append(document)
 
     for i, v in enumerate(documents_in_collection_customers):
-        try:
+        if v["id_books_rented"] is None:
+            pass
+        else:
             if book_id in v["id_books_rented"]:
                 result = collection_books.find_one({"book_name": book_name}, {"availability_status": 1})
                 result = result.get("availability_status")
-        except TypeError:
-            print("TypeError: argument of type 'NoneType' is not iterable")
 
     return result
+
+
+def update_book_availability_status(collection_books: pymongo.collection.Collection,
+                                    collection_customers: pymongo.collection.Collection,
+                                    book_name: str):
+    """
+
+    :return:
+    """
+    find_book = collection_books.find_one({"book_name": book_name}, {"_id": 1})
+    book_id = find_book.get("_id")
+    documents_in_collection_customers = []
+    result_availability_status = int
+    remove_book = int
+
+    for document in collection_customers.find({}):
+        documents_in_collection_customers.append(document)
+
+    for i, v in enumerate(documents_in_collection_customers):
+        customer_id = v.get("_id")
+
+        if v["id_books_rented"] is None:
+            pass
+        else:
+            if book_id in v["id_books_rented"]:
+                remove_book = collection_customers.update_one({"_id": customer_id}, {"$set":
+                    {"id_books_rented": v["id_books_rented"].remove(book_id)}})
+                result_availability_status = collection_books.update_one({"book_name": book_name},
+                                                                         {"$set": {"availability_status": True}})
+
+    return result_availability_status.modified_count + remove_book.modified_count

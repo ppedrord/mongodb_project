@@ -440,13 +440,12 @@ def test_delete_one(db_create_and_populate_collection_for_tests):
 
 
 field_delete_many_01 = "age"
-modifier_delete_many_01 = "$gt"
-value_delete_many_01 = "22"
+value_delete_many_01 = "21"
 
 
-def test_delete_many(db_create_and_populate_collection_for_tests):
-    assert mongo_books.delete_many(db_create_and_populate_collection_for_tests, field_delete_many_01,
-                                   modifier_delete_many_01, value_delete_many_01) == True
+def test_delete_many_greater_than(db_create_and_populate_collection_for_tests):
+    assert mongo_books.delete_many_greater_than(db_create_and_populate_collection_for_tests, field_delete_many_01,
+                                   value_delete_many_01) == 4
 
 
 field_update_book_status = "id_books_rented"
@@ -467,4 +466,13 @@ book_name_01 = "The Ruins of Gorlan"
 
 def test_check_book_availability_status_in_customer(db_collection_books_check_book_availability_status_in_customer,
                                                     db_collection_customers_check_book_availability_status_in_customer):
-    assert mongo_books.check_book_availability_status_in_customers(db_collection_books_check_book_availability_status_in_customer, db_collection_customers_check_book_availability_status_in_customer, book_name_01) == False
+    assert mongo_books.check_book_availability_status_in_customers(
+        db_collection_books_check_book_availability_status_in_customer,
+        db_collection_customers_check_book_availability_status_in_customer, book_name_01) == False
+
+
+def test_update_book_availability_status(db_collection_books_check_book_availability_status_in_customer,
+                                         db_collection_customers_check_book_availability_status_in_customer):
+    assert mongo_books.update_book_availability_status(
+        db_collection_books_check_book_availability_status_in_customer,
+        db_collection_customers_check_book_availability_status_in_customer, book_name_01) == 2
