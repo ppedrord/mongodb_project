@@ -315,6 +315,65 @@ def db_collection_customers_check_book_availability_status_in_customer():
     collection_customers.drop()
 
 
+@pytest.fixture
+def db_collection_books_update_prices():
+    collection_books = client["books"]
+    books_for_sale = [
+        {
+                    "_id": "BFS0001",
+                    "book_name": "The Ruins of Gorlan",
+                    "author": "John Flanagan",
+                    "year": "2004",
+                    "price": 30.00,
+                    "category": [
+                        "Fantasy",
+                        "Adventure"
+                    ],
+                    "series": "Ranger's Apprentice",
+                    "item_category": "Book for sale"
+                },
+        {
+            "_id": "BFS0002",
+            "book_name": "The Burning Bridge",
+            "author": "John Flanagan",
+            "year": "2005",
+            "price": 30.00,
+            "category": [
+                "Fantasy",
+                "Adventure"
+            ],
+            "series": "Ranger's Apprentice",
+            "item_category": "Book for sale"
+        },
+        {
+            "_id": "BFS0003",
+            "book_name": "The Ethics of Liberty",
+            "author": "Murray N. Rothbard",
+            "year": "1982",
+            "price": 34.99,
+            "category": [
+                "Political Science"
+            ],
+            "item_category": "Book for sale"
+        },
+        {
+            "_id": "BFS0004",
+            "book_name": "The Law",
+            "author": "Frédéric Bastiat",
+            "year": "1850",
+            "price": 4.99,
+            "category": [
+                "Political Science",
+                "Philosophy"
+                ],
+            "item_category": "Book for sale"
+            }
+        ]
+    collection_books.insert_many(books_for_sale)
+    yield collection_books
+    collection_books.drop()
+
+
 value = {
     "customer_name": "João Victor",
     "age": "22"
@@ -476,3 +535,12 @@ def test_update_book_availability_status(db_collection_books_check_book_availabi
     assert mongo_books.update_book_availability_status(
         db_collection_books_check_book_availability_status_in_customer,
         db_collection_customers_check_book_availability_status_in_customer, book_name_01) == 2
+
+
+base_price_01 = 29.00
+discount_01 = 0.85
+
+
+def test_update_prices_with_discount(db_collection_books_update_prices):
+    assert mongo_books.update_prices_with_discount(db_collection_books_update_prices, base_price_01, discount_01) == 3
+

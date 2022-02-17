@@ -156,3 +156,23 @@ def update_book_availability_status(collection_books: pymongo.collection.Collect
                                                                          {"$set": {"availability_status": True}})
 
     return result_availability_status.modified_count + remove_book.modified_count
+
+
+def update_prices_with_discount(collection: pymongo.collection.Collection, base_price: int, discount: float):
+    """
+    :param collection: The collection that will be updated
+    :param base_price: The price from which the discount will be applied
+    :param discount: The discount multiplier
+    :return: The number of files changed
+    """
+    modified_count = 0
+    books_available_for_discount = []
+    for documents in collection.find({"price": {"$gte": base_price}}):
+        books_available_for_discount.append(documents)
+
+    for i, v in enumerate(books_available_for_discount):
+        price = v.get("price")
+        applying_discount = collection.update_one({"price": price}, {"$set": {"price": price * discount}})
+        modified_count = modified_count + applying_discount.modified_count
+
+    return modified_count
