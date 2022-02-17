@@ -50,7 +50,7 @@ def find_many_greater_than(collection: pymongo.collection.Collection, field: str
 
 
 def update_one_set(collection: pymongo.collection.Collection, field: str, value: str or dict,
-               new_value: str or dict or int or bool) -> int:
+                   new_value: str or dict or int or bool) -> int:
     """
     :param field: The field being searched
     :param value: The value being searched
@@ -58,14 +58,12 @@ def update_one_set(collection: pymongo.collection.Collection, field: str, value:
     :param collection: The collection that will be updated
     :return: The number of modified documents
     """
-    find_one_document = collection.find_one({field: value})
-    print(find_one_document)
     update_one_document = collection.update_one({field: value}, {"$set": {field: new_value}})
     return update_one_document.modified_count
 
 
 def update_many_set(collection: pymongo.collection.Collection, field: str, value: str or dict,
-                new_value: str or dict or int or bool) -> int:
+                    new_value: str or dict or int or bool) -> int:
     """
     :param field: The field being searched
     :param value: The value being searched
@@ -89,7 +87,7 @@ def delete_one(collection: pymongo.collection.Collection, field: str, value: str
 
 
 def delete_many(collection: pymongo.collection.Collection, field: str, value: str or dict or int or bool,
-                modifier: str,) -> int:
+                modifier: str, ) -> int:
     """
     :param field: The field being searched
     :param value: The value being searched
@@ -100,3 +98,31 @@ def delete_many(collection: pymongo.collection.Collection, field: str, value: st
 
     delete_many_documents = collection.delete_many({field: {modifier: value}})
     return delete_many_documents.acknowledged
+
+
+def check_book_availability_status_in_customers(collection_books: pymongo.collection.Collection,
+                                                collection_customers: pymongo.collection.Collection,
+                                                book_name: str) -> bool:
+    """
+    :param collection_books: The collection of books in the Library
+    :param collection_customers: The customers registered in the Library
+    :param book_name: The name of the book to be searched
+    :return: True if the book is available for rent and False if it's not
+    """
+    find_book = collection_books.find_one({"book_name": book_name}, {"_id": 1})
+    book_id = find_book.get("_id")
+    documents_in_collection_customers = []
+    result = bool
+
+    for document in collection_customers.find({}):
+        documents_in_collection_customers.append(document)
+
+    for i, v in enumerate(documents_in_collection_customers):
+        try:
+            if book_id in v["id_books_rented"]:
+                result = collection_books.find_one({"book_name": book_name}, {"availability_status": 1})
+                result = result.get("availability_status")
+        except TypeError:
+            print("TypeError: argument of type 'NoneType' is not iterable")
+
+    return result
